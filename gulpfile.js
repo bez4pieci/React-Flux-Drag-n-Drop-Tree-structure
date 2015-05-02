@@ -17,6 +17,7 @@ var path = require('path');
 var runSequence = require('run-sequence');
 var webpack = require('webpack');
 var argv = require('minimist')(process.argv.slice(2));
+var sourcemaps = require('gulp-sourcemaps');
 
 // Settings
 var RELEASE = !!argv.release;                 // Minimize and optimize during a build?
@@ -66,17 +67,16 @@ gulp.task('assets', function() {
 
 // CSS style sheets
 gulp.task('styles', function() {
-  src.styles = 'src/styles/**/*.{css,less}';
-  return gulp.src('src/styles/bootstrap.less')
+  src.styles = 'src/styles/**/*.{css,scss}';
+  return gulp.src('src/styles/bootstrap.scss')
     .pipe($.plumber())
-    .pipe($.less({
-      sourceMap: !RELEASE,
-      sourceMapBasepath: __dirname
-    }))
+    .pipe(sourcemaps.init())
+    .pipe($.sass())
     .on('error', console.error.bind(console))
     .pipe($.autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
     .pipe($.csscomb())
     .pipe($.if(RELEASE, $.minifyCss()))
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest('build/css'))
     .pipe($.size({title: 'styles'}));
 });

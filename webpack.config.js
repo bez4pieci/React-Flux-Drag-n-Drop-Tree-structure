@@ -64,9 +64,9 @@ var config = {
         loader: 'style-loader!css-loader!' + AUTOPREFIXER_LOADER
       },
       {
-        test: /\.less$/,
+        test: /\.scss$/,
         loader: 'style-loader!css-loader!' + AUTOPREFIXER_LOADER +
-                '!less-loader'
+                '!sass-loader'
       },
       {
         test: /\.gif/,

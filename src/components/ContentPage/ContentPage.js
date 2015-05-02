@@ -6,7 +6,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import './ContentPage.less';
+import './ContentPage.scss';
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 
 class ContentPage {
