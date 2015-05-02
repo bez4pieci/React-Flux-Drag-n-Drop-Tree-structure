@@ -61,6 +61,6 @@ Promise.all([
     } else {
       window.attachEvent('onload', resolve);
     }
-  }).then(() => FastClick.attach(document.body)),
-  new Promise((resolve) => AppActions.loadPage(path, resolve))
+  }).then(() => FastClick.attach(document.body))
+  //new Promise((resolve) => AppActions.loadPage(path, resolve))
 ]).then(run);

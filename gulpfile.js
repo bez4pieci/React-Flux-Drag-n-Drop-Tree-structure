@@ -69,13 +69,13 @@ gulp.task('assets', function() {
 gulp.task('styles', function() {
   src.styles = 'src/styles/**/*.{css,scss}';
   return gulp.src('src/styles/bootstrap.scss')
-    .pipe($.plumber())
+    //.pipe($.plumber())
     .pipe(sourcemaps.init())
     .pipe($.sass())
-    .on('error', console.error.bind(console))
+      .on('error', console.error.bind(console))
     .pipe($.autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
-    .pipe($.csscomb())
-    .pipe($.if(RELEASE, $.minifyCss()))
+    //.pipe($.csscomb())
+    //.pipe($.if(RELEASE, $.minifyCss()))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest('build/css'))
     .pipe($.size({title: 'styles'}));

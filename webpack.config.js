@@ -63,11 +63,11 @@ var config = {
         test: /\.css$/,
         loader: 'style-loader!css-loader!' + AUTOPREFIXER_LOADER
       },
-      {
-        test: /\.scss$/,
-        loader: 'style-loader!css-loader!' + AUTOPREFIXER_LOADER +
-                '!sass-loader'
-      },
+      //{
+      //  test: /\.scss$/,
+      //  loader: 'style-loader!css-loader!' + AUTOPREFIXER_LOADER +
+      //          '!sass-loader'
+      //},
       {
         test: /\.gif/,
         loader: 'url-loader?limit=10000&mimetype=image/gif'

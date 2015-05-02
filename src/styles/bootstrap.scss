@@ -1,3 +1,32 @@
 body {
-  margin: 0;
+  margin: 20px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.App {
+  width: 90%;
+  max-width: 960px;
+  margin: auto;
+}
+
+.Widget {
+  padding: 10px;
+  margin: 10px;
+
+  &--PAGE {
+    background: #F7F7F7;
+    padding: 10px;
+  }
+
+  &--TEXT {
+    background: #999;
+    color: #FFF;
+  }
+
+  &--CONTAINER {
+    border: 1px solid #333;
+  }
 }

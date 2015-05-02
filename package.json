@@ -20,6 +20,7 @@
     "jade": "1.9.2",
     "lodash": "3.7.0",
     "react": "0.13.2",
+    "react-dnd": "^0.9.8",
     "superagent": "1.2.0"
   },
   "devDependencies": {
