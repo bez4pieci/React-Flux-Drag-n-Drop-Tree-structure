@@ -1,11 +1,3 @@
-/*
- * React.js Starter Kit
- * Copyright (c) 2014 Konstantin Tarkus (@koistya), KriaSoft LLC.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
-
 import Dispatcher from '../core/Dispatcher';
 import ActionTypes from '../constants/ActionTypes';
 import PayloadSources from '../constants/PayloadSources';
@@ -14,81 +6,117 @@ import assign from 'react/lib/Object.assign';
 
 var CHANGE_EVENT = 'change';
 
-var pages = {};
+var widgets = [];
 var loading = false;
 
-if (__SERVER__) {
-  pages['/'] = {title: 'Home Page'};
-  pages['/privacy'] = {title: 'Privacy Policy'};
+
+function findWidgetById(id, parent = null) {
+  if (parent === null) {
+    parent = widgets[0];
+  }
+
+  if (!parent.children) {
+    return false;
+  }
+
+  for (var i = 0; i < parent.children.length; i++) {
+    let child = parent.children[i];
+    if (child.id === id) {
+      return {widget: child, parent: parent, index: parent.children.indexOf(child)};
+    }
+
+    let found = findWidgetById(id, child);
+    if (found) {
+      return found;
+    }
+  }
+
+  return false;
 }
+
 
 var AppStore = assign({}, EventEmitter.prototype, {
 
-  isLoading() {
-    return loading;
-  },
-
-  /**
-   * Gets page data by the given URL path.
-   *
-   * @param {String} path URL path.
-   * @returns {*} Page data.
-   */
-  getPage(path) {
-    return path in pages ? pages[path] : {
-      title: 'Page Not Found',
-      type: 'notfound'
-    };
-  },
-
-  /**
-   * Emits change event to all registered event listeners.
-   *
-   * @returns {Boolean} Indication if we've emitted an event.
-   */
   emitChange() {
-    return this.emit(CHANGE_EVENT);
+    this.emit(CHANGE_EVENT);
   },
 
-  /**
-   * Register a new change event listener.
-   *
-   * @param {function} callback Callback function.
-   */
   onChange(callback) {
     this.on(CHANGE_EVENT, callback);
   },
 
-  /**
-   * Remove change event listener.
-   *
-   * @param {function} callback Callback function.
-   */
-  off(callback) {
-    this.off(CHANGE_EVENT, callback);
+  off() {
+    this.removeAllListeners(CHANGE_EVENT);
+  },
+
+  getAll() {
+    return widgets;
+  },
+
+  getPage() {
+    return widgets[0] || null;
+  },
+
+  hilight(targetId) {
+    const target = findWidgetById(targetId);
+    if(!target) return;
+    target.widget.hilighted = true;
+    this.emitChange();
+  },
+
+  unhilight(targetId) {
+    const target = findWidgetById(targetId);
+    if(!target) return;
+    target.widget.hilighted = false;
+    this.emitChange();
+  },
+
+  move(sourceId, targetId, position = 'after') {
+    const source = findWidgetById(sourceId);
+    const target = findWidgetById(targetId);
+
+    source.parent.children.splice(source.index, 1);
+    target.parent.children.splice(target.index, 0, source.widget);
+
+    this.emitChange();
   }
 
 });
+
 
 AppStore.dispatcherToken = Dispatcher.register((payload) => {
   var action = payload.action;
 
   switch (action.actionType) {
 
-    case ActionTypes.LOAD_PAGE:
-      if (action.source === PayloadSources.VIEW_ACTION) {
+    case ActionTypes.LOAD_WIDGETS:
+      if (payload.source === PayloadSources.VIEW_ACTION) {
         loading = true;
+
       } else {
         loading = false;
         if (!action.err) {
-          pages[action.path] = action.page;
+          widgets[0] = action.widgets[0];
+          AppStore.emitChange();
         }
       }
-      AppStore.emitChange();
       break;
 
+    case ActionTypes.MOVE:
+      AppStore.move(action.sourceId, action.targetId);
+      break;
+
+    case ActionTypes.HILIGHT:
+      AppStore.hilight(action.targetId);
+      break;
+
+    case ActionTypes.UNHILIGHT:
+      AppStore.unhilight(action.targetId);
+      break;
+
+
     default:
-      // Do nothing
+    // Do nothing
 
   }
 

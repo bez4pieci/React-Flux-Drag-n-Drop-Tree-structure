@@ -29,4 +29,9 @@ body {
   &--CONTAINER {
     border: 1px solid #333;
   }
+
+
+  &--hilighted {
+    outline: 5px solid red;
+  }
 }
